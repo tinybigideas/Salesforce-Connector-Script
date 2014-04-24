@@ -344,8 +344,6 @@ function login() {
         setInstanceUrl(soapResult.Envelope.Body.loginResponse.result.serverUrl.getText());
     } 
     catch(e) {
-        Logger.log("EXCEPTION!!!");
-        Logger.log(e);
         Browser.msgBox(e);
     }
 
@@ -393,13 +391,5 @@ function renderGridData(object, renderHeaders) {
 function fetch(url) {
     var httpheaders = {Authorization: "OAuth " + getSessionId()};
     var parameters = {headers: httpheaders}; 
-
-    //Logger.log(parameters);
-    try {
-        return UrlFetchApp.fetch(url, parameters).getContentText();
-    } 
-    catch(e) {
-        Logger.log(e);
-        Browser.msgBox(e);
-    }
+    return UrlFetchApp.fetch(url, parameters).getContentText();
 };
