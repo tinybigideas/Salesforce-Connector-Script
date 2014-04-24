@@ -1,0 +1,1 @@
+Google Spreadsheets Script to query Salesforce API data based off Harshit Pandey's earlier script: https://github.com/mailtoharshit/Google-Cloud-Connecter
