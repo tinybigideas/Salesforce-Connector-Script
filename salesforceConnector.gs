@@ -316,8 +316,8 @@ function renderSettingsDialog() {
  */
 function login() {
   
-    var message="<?xml version='1.0' encoding='utf-8'?>" 
-    +"<soap:Envelope xmlns:soap='http://schemas.xmlsoap.org/soap/envelope/' " 
+    var message = "<?xml version='1.0' encoding='utf-8'?>" 
+    + "<soap:Envelope xmlns:soap='http://schemas.xmlsoap.org/soap/envelope/' " 
     +   "xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns:xsd='http://"
     +   "www.w3.org/2001/XMLSchema'>" 
     +  "<soap:Body>" 
@@ -354,31 +354,31 @@ function login() {
  */
 function SOQLQuery(SOQL) {
     var results = fetch(getRestEndpoint() + "/services/data/v28.0/" + "query?q=" + encodeURIComponent(SOQL));
-    return renderGridData(Utilities.jsonParse(results), true);
+    return renderGridData(Utilities.jsonParse(results));
 };
 
 /**
  * Clean data and get records
  */
-function renderGridData(object, renderHeaders) {
-
+function renderGridData(object) {
     var data = [];
-    var sObjectAttributes = {};
-
-    for (var i in object.records) {
+    for (var record in object.records) {
         var values = [];
-        for(var j in object.records[i]) {
-            
-            if(j != "attributes") {
-                values.push(object.records[i][j]);
-            } 
-            else {
-                if(object.records[i][j].url !=undefined) {
-                    var id = object.records[i][j].url.substr(object.records[i][j].url.length-18,18);
-                    sObjectAttributes[id] = object.records[i][j].type;
+        for (var property in object.records[record]) {
+            if (object.records[record].hasOwnProperty(property)) {
+                if (property != 'attributes') {
+                    if (Object.prototype.toString.call(object.records[record][property]) === '[object Object]') {
+                        for (var subProperty in object.records[record][property]) {
+                            if (subProperty != 'attributes') {
+                                values.push(object.records[record][property][subProperty]);
+                            }
+                        }
+                    }
+                    else {
+                        values.push(object.records[record][property]);
+                    }
                 }
             }
-
         }
         data.push(values);
     }
