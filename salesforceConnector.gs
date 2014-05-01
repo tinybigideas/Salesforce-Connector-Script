@@ -65,9 +65,9 @@ var NEXT_RECORDS_URL_PROPERTY_NAME = "nextRecordsUrl";
 
 var SOBJECT_ATTRIBUTES_PROPERTY_NAME = "sObjectAttributes";
 
-var SANDBOX_SOAP_URL = "https://test.salesforce.com/services/Soap/u/28.0";
+var SANDBOX_SOAP_URL = "https://test.salesforce.com/services/Soap/u/30.0";
 
-var PRODUCTION_SOAP_URL = "http://login.salesforce.com/services/Soap/u/28.0";
+var PRODUCTION_SOAP_URL = "https://login.salesforce.com/services/Soap/u/30.0";
 
 /**
  * @return String Username.
@@ -353,7 +353,7 @@ function login() {
  * Run SOQL Query in spreadsheet
  */
 function SOQLQuery(SOQL) {
-    var results = fetch(getRestEndpoint() + "/services/data/v28.0/" + "query?q=" + encodeURIComponent(SOQL));
+    var results = fetch(getRestEndpoint() + "/services/data/v30.0/" + "query?q=" + encodeURIComponent(SOQL));
     return renderGridData(Utilities.jsonParse(results));
 };
 
