@@ -353,36 +353,74 @@ function login() {
  * Run SOQL Query in spreadsheet
  */
 function SOQLQuery(SOQL) {
-    var results = fetch(getRestEndpoint() + "/services/data/v30.0/" + "query?q=" + encodeURIComponent(SOQL));
-    return renderGridData(Utilities.jsonParse(results));
+  var results = fetch(getRestEndpoint() + "/services/data/v30.0/" + "query?q=" + encodeURIComponent(SOQL));
+  return renderGridData(Utilities.jsonParse(results));
 };
 
 /**
  * Clean data and get records
  */
-function renderGridData(object) {
-    var data = [];
-    for (var record in object.records) {
-        var values = [];
-        for (var property in object.records[record]) {
-            if (object.records[record].hasOwnProperty(property)) {
-                if (property != 'attributes') {
-                    if (Object.prototype.toString.call(object.records[record][property]) === '[object Object]') {
-                        for (var subProperty in object.records[record][property]) {
-                            if (subProperty != 'attributes') {
-                                values.push(object.records[record][property][subProperty]);
-                            }
-                        }
-                    }
-                    else {
-                        values.push(object.records[record][property]);
-                    }
-                }
-            }
-        }
-        data.push(values);
+function renderGridData(object, headers) {
+  var data = [];
+  var headersArray = [];
+  
+  // make headers array
+  if (headers != undefined && headers.length > 0) {
+    if (headers.indexOf(',') != -1) {
+      var splitHeaders = headers.split(',');
+      for (var header in splitHeaders) {
+        headersArray.push(splitHeaders[header].trim());
+      }
     }
-    return data;
+    else {
+      headersArray.push(headers.trim());
+    }
+  }
+  
+  
+  for (var record in object.records) {
+    var values = [];
+
+    if (headersArray.length > 0) {
+        for (var header in headersArray) {
+          for (var property in object.records[record]) {
+            if (object.records[record].hasOwnProperty(property)) {
+              if (property != 'attributes') {
+                if (Object.prototype.toString.call(object.records[record][property]) === '[object Object]') {
+                  for (var subProperty in object.records[record][property]) {
+                    if (subProperty != 'attributes') {
+                      if (headersArray[header] == subProperty) {
+                        values.push(object.records[record][property][subProperty]);
+                      }
+                    }
+                  }
+                }
+                else {
+                  if (headersArray[header] == property) {
+                    values.push(object.records[record][property]);
+                  }
+                }
+              }
+            }
+          }
+        }                
+    }
+    else {
+      if (Object.prototype.toString.call(object.records[record][property]) === '[object Object]') {
+        for (var subProperty in object.records[record][property]) {
+          if (subProperty != 'attributes') {
+            values.push(object.records[record][property][subProperty]);
+          }
+        }
+      }
+      else {
+        values.push(object.records[record][property]);
+      }
+                    
+    }
+    data.push(values);
+  }
+  return data;
 };
 
 /**
