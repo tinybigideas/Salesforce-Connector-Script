@@ -389,8 +389,19 @@ function renderGridData(object, headers) {
                 if (Object.prototype.toString.call(object.records[record][property]) === '[object Object]') {
                   for (var subProperty in object.records[record][property]) {
                     if (subProperty != 'attributes') {
-                      if (headersArray[header] == subProperty) {
-                        values.push(object.records[record][property][subProperty]);
+                      if (Object.prototype.toString.call(object.records[record][property][subProperty]) === '[object Object]') {
+                        for (var subSubProperty in object.records[record][property][subProperty]) {
+                          if (subSubProperty != 'attributes') {
+                            if (headersArray[header] == subSubProperty) {
+                              values.push(object.records[record][property][subProperty][subSubProperty]);
+                            }
+                          }
+                        }
+                      }
+                      else {
+                        if (headersArray[header] == subProperty) {
+                          values.push(object.records[record][property][subProperty]);
+                        }
                       }
                     }
                   }
@@ -406,17 +417,31 @@ function renderGridData(object, headers) {
         }                
     }
     else {
-      if (Object.prototype.toString.call(object.records[record][property]) === '[object Object]') {
-        for (var subProperty in object.records[record][property]) {
-          if (subProperty != 'attributes') {
-            values.push(object.records[record][property][subProperty]);
+      for (var property in object.records[record]) {
+        if (object.records[record].hasOwnProperty(property)) {
+          if (property != 'attributes') {
+            if (Object.prototype.toString.call(object.records[record][property]) === '[object Object]') {
+              for (var subProperty in object.records[record][property]) {
+                if (subProperty != 'attributes') {
+                  if (Object.prototype.toString.call(object.records[record][property][subProperty]) === '[object Object]') {
+                    for (var subSubProperty in object.records[record][property][subProperty]) {
+                      if (subSubProperty != 'attributes') {
+                        values.push(object.records[record][property][subProperty][subSubProperty]);
+                      }
+                    }
+                  }
+                  else {
+                    values.push(object.records[record][property][subProperty]);
+                  }
+                }
+              }
+            }
+            else {
+              values.push(object.records[record][property]);
+            }
           }
         }
-      }
-      else {
-        values.push(object.records[record][property]);
-      }
-                    
+      }               
     }
     data.push(values);
   }
